@@ -1,0 +1,15 @@
+graph a{
+
+	A -- B [style="line width=4bp"]
+	A -- C [style="line width=4bp"]
+	A -- D [style="line width=4bp"]
+	B -- E
+	B -- F
+	C -- G
+	C -- H
+	C -- I
+	D -- J
+	D -- K
+	D -- L
+
+}
