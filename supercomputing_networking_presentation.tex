@@ -52,7 +52,7 @@
 
 \author{Lloyd Brown}
 \title{High-Performance Computing Networks at BYU}
-\date{March 17, 2010}
+\date{October 11, 2011}
 
 
 \begin{document}
@@ -69,15 +69,44 @@
   \frame{
     \frametitle{What makes a supercomputer, super?}
 
+    HPC or High-Performance Computing, is characterized by workloads and hardware requirements
+
     \begin{itemize}
       \pause\item Significantly larger compute capability than an average system
-      \pause\item No specific threshold for capacity
       \pause\item Used to solve problems that are too large to easily be solved on a single, traditional system
       \pause\item May utilize specialty hardware and software
+      \pause\item No specific threshold for capacity
     \end{itemize}
   }
 
 \section{Types of HPC}
+  \frame{
+    \frametitle{Nature of HPC Computing}
+    In HPC, speedup comes from one of two sources:
+    
+    \begin{itemize}
+      \item Using faster resources (eg. faster clock speeds)
+      \item Using more resources (eg. using more processors) or \emph{Parallelism}
+    \end{itemize}
+
+    Physics generally limits us on the faster resources, so we spend more time on parallelism.
+
+  }
+
+  \frame{
+    \frametitle{Parallelism and Communication Needs}
+
+    \begin{itemize}
+      \item When utilizing multiple resources (eg. multiple processors), the program must:
+      \begin{itemize}
+	\item Split up the workload
+	\item Provide necessary coordination among resources
+      \end{itemize}
+      \item The algorithm and data determine the nature of communication needs
+      \item In general, for HPC problems, communication is key.
+    \end{itemize}
+
+  }
 
   \frame{
     \frametitle{What kinds of HPC systems are out there?}
@@ -92,15 +121,15 @@
 	\end{itemize}
 	\pause\item Accelerators
 	\begin{itemize}
-	  \pause\item GPUs
-	  \pause\item FPGAs
+	  \pause\item GPU
+	  \pause\item Intel MIC
+	  \pause\item FPGA
+	  \pause\item Cell
 	\end{itemize}
 	\pause\item Specialty/Proprietary Interconnects
 	\begin{itemize}
 	  \pause\item Infiniband
 	  \pause\item NUMALink
-	  \pause\item Quadrics
-	  \pause\item Myrinet
 	\end{itemize}
 % (eg. NUMALink, Infiniband, Quadrics, Myrinet, etc.)
       \end{itemize}
@@ -113,6 +142,10 @@
 
   }
 
+
+
+
+
 \section{Infiniband}
 
   \frame{
@@ -123,8 +156,14 @@
       \pause\item utilizes multiple speeds, lanes, and links
       \pause\item provides:
       \begin{itemize}
-	\item extremely high bandwidth (commonly 40Gb/s)
+	\item extremely high bandwidth
 	\pause\item extremely low latency (one-way < 10 $\mu$s, compared to approx. 32 $\mu$s for 1GbE)
+      \end{itemize}
+      \item Speedup comes mostly from:
+      \begin{itemize}
+	\item Short protocol stack (very little above layer 2)
+	\item Low-latency switching (very little decision making in the switch)
+	\item Remote Direct Memory Access (RDMA)
       \end{itemize}
     \end{itemize}
 
@@ -153,66 +192,74 @@
 
     \begin{center}
      
-      \begin{tabular}{|c|c|c|c|}
+      \begin{tabular}{|c|c|c|c|c|}
       \hline
-		 & \emph{SDR} & \emph{DDR} & \emph{QDR}\\
+		 & \emph{SDR} & \emph{DDR} & \emph{QDR} & \emph{FDR}\\
       \hline
-      \emph{1x}  & 2.5 Gb/s & 5 Gb/s & 10 Gb/s \\
+      \emph{1x}  & 2.5 Gb/s & 5 Gb/s & 10 Gb/s & 14 Gb/s\\
       \hline
-      \emph{4x}  & 10 Gb/s & 20 Gb/s & 40 Gb/s \\
+      \emph{4x}  & 10 Gb/s & 20 Gb/s & 40 Gb/s & 56 Gb/s\\
       \hline
-      \emph{12x} & 30 Gb/s & 60 Gb/s & 120 Gb/s \\
+      \emph{12x} & 30 Gb/s & 60 Gb/s & 120 Gb/s & 168 Gb/s\\
       \hline
       \end{tabular}
     \end{center}
 
   }
-
+% 
+% %   \frame{
+% %     \frametitle{Connectors}
+% %     
+% %   }
+% 
 %   \frame{
-%     \frametitle{Connectors}
+%     \frametitle{Does this look familiar?}
+%     \begin{itemize}
+%       \item Is there any other common computer technology that looks like this from a physical layer?  Using multiple lanes, with per-lane speed doubling each successive iteration of the standard?\\
+% %     \pause Any gamers in the room?
+% %     \pause What is the most bandwidth and latency sensitive hardware used for gaming?  Requires the fastest communication?
+% %     \pause How about PCIe?
 %     
+% 	
+% 
+% %       \pause\centering{How about}\centering{\pause\strong{PCIe}}
+%       \pause\item How about \emph{PCI-Express}?
+%     \end{itemize}
 %   }
-
-  \frame{
-    \frametitle{Does this look familiar?}
-    \begin{itemize}
-      \item Is there any other common computer technology that looks like this from a physical layer?  Using multiple lanes, with per-lane speed doubling each successive iteration of the standard?\\
-%     \pause Any gamers in the room?
-%     \pause What is the most bandwidth and latency sensitive hardware used for gaming?  Requires the fastest communication?
-%     \pause How about PCIe?
-    
-	
-
-%       \pause\centering{How about}\centering{\pause\strong{PCIe}}
-      \pause\item How about \emph{PCI-Express}?
-    \end{itemize}
-  }
-
-
+% 
+% 
   \subsection{Encoding}
     \frame{
       \frametitle{Encoding Overhead}
-      The Infiniband standard uses an 8b/10b encoding, meaning that the net speed is 80\% of the raw speed:
+
+      Infiniband uses bit-line encodings to guarantee bit transitions for clock synchronization:
+      \begin{itemize}
+	\item SDR, DDR, QDR - 8b/10b encoding (8 data bytes encoded in 10 bytes total; 20\% overhead)
+	\item FDR and beyond - 64b/66b encoding (64 data bytes encoded in 66 bytes total; 3\% overhead)
+      \end{itemize}
+
+
 
       \pause
-
+      \begin{small}
       \begin{center}
       
-	\begin{tabular}{|c|c|c|c|}
+	\begin{tabular}{|c|c|c|c|c|}
 	\hline
-		                    & \emph{SDR}   & \emph{DDR}  & \emph{QDR}\\
+		                    & \emph{SDR}   & \emph{DDR}  & \emph{QDR}	& \emph{FDR}\\
 	\hline
-	\multirow{2}{*}{\emph{1x}}  & 2.5 Gb/s raw & 5 Gb/s raw  & 10 Gb/s raw \\
-				    & 2 Gb/s net   & 4 Gb/s net  & 8 Gb/s net  \\
+	\multirow{2}{*}{\emph{1x}}  & 2.5 Gb/s raw & 5 Gb/s raw  & 10 Gb/s raw	& 14 Gb/s raw\\
+				    & 2 Gb/s net   & 4 Gb/s net  & 8 Gb/s net  	& 13.6 Gb/s net\\
 	\hline
-	\multirow{2}{*}{\emph{4x}}  & 10 Gb/s raw  & 20 Gb/s raw & 40 Gb/s raw \\
-				    & 8 Gb/s net   & 16 Gb/s net & 32 Gb/s net \\
+	\multirow{2}{*}{\emph{4x}}  & 10 Gb/s raw  & 20 Gb/s raw & 40 Gb/s raw	& 56 Gb/s raw\\
+				    & 8 Gb/s net   & 16 Gb/s net & 32 Gb/s net 	& 54.3 Gb/s net\\
 	\hline
-	\multirow{2}{*}{\emph{12x}} & 30 Gb/s raw  & 60 Gb/s raw & 120 Gb/s raw\\
-				    & 24 Gb/s net  & 48 Gb/s net & 96 Gb/s net \\
+	\multirow{2}{*}{\emph{12x}} & 30 Gb/s raw  & 60 Gb/s raw & 120 Gb/s raw	& 168 Gb/s raw\\
+				    & 24 Gb/s net  & 48 Gb/s net & 96 Gb/s net	& 162.9 Gb/s net\\
 	\hline
 	\end{tabular}
       \end{center}
+      \end{small}
     }
 
   \subsection{Subnet Management}
@@ -230,20 +277,31 @@
 
   \subsection{Topologies}
     \frame{
+      \frametitle{Infiniband Topologies}
+      Infinband puts very little restriction on the physical topology of the network.  Basically, since the Subnet Manager loads all the forwarding tables, as long as you can build an appropriate graph parsing algorithm, and implement it in a subnet manager, you can use a topology.  This allows some much more interesting topologies than the common Ethernet and TCP/IP networks usually use.\footnote{Technically you can use any topology with Ethernet and TCP/IP as well, but it takes a huge amount of work, with lots of VLANs and stub routers, etc., to work around the Spanning-tree protocols.  I don't recommend trying it.}
+
+    }
+
+
+    \frame{
       \frametitle{Possible Topologies}
       \begin{itemize}
 	\pause\item Tree/Fat-Tree
 	\pause\item Fully-connected Mesh
 	\pause\item Rectangular Mesh
 	\pause\item Toroidal Mesh
-% 	\pause\item Hypercube
-	\pause\item Clos Network
+	\pause\item Hypercube
+	\pause\item Folded-Clos Network
       \end{itemize}
+
+
     }
+
 
 
     \frame{
       \frametitle{Fat Tree Example}
+      A \emph{Fat Tree} is basically a tree with increased bandwidth (faster links or more links) between upper tiers relative to lower tiers
       \begin{center}
 	\begin{tikzpicture}[>=latex,line join=bevel,scale=0.5]
 	%%
@@ -280,16 +338,17 @@
 
   \frame{
     \frametitle{Fully-connected Mesh Example}
+    Shortest hop-count (1 hop) from any point to any other point; takes a huge amount of cables.
     \begin{center}
-	\begin{tikzpicture}[>=latex,line join=bevel,scale=0.45]
+	\begin{tikzpicture}[>=latex,line join=bevel,scale=0.4]
 	  \node (A) at (336bp,81bp) [node] {A};
 	  \node (C) at (108bp,41bp) [node] {C};
-	  \node (B) at (378bp,197bp) [node] {B};
+	  \node (B) at (378bp,197bp) [node] {I};
 	  \node (E) at (28bp,259bp) [node] {E};
 	  \node (D) at (28bp,135bp) [node] {D};
 	  \node (G) at (229bp,375bp) [node] {G};
 	  \node (F) at (108bp,353bp) [node] {F};
-	  \node (I) at (229bp,19bp) [node] {I};
+	  \node (I) at (229bp,19bp) [node] {B};
 	  \node (H) at (336bp,313bp) [node] {H};
 	  \draw [] (D) -- (H);
 	  \draw [] (E) -- (F);
@@ -334,6 +393,7 @@
 
   \frame{
     \frametitle{Rectangular/Toroidal Mesh Example}
+    Excellent for large topologies (no spine switches to buy); higher hop count than other options, depending on size
     \begin{center}
       \begin{figure}
 	\subfigure[Rectangular]{
@@ -442,8 +502,74 @@
   }
 
   \frame{
-    \frametitle{Clos Network Example}
+    \frametitle{Hypercube example (4-d)}
+    Used rarely; for \emph{d} dimensions, no more than \emph{d} hops from any other point in the topology.
+
     \begin{center}
+      \begin{tikzpicture}[>=latex,line join=bevel,transform shape,scale=0.5]
+	\GraphInit
+	\Vertex[x=0,y=0,style=node]{0000}
+	\Vertex[x=4,y=0,style=node]{0001}
+	\Vertex[x=2,y=2,style=node]{0010}
+	\Vertex[x=6,y=2,style=node]{0011}
+	\Vertex[x=0,y=4,style=node]{0100}
+	\Vertex[x=4,y=4,style=node]{0101}
+	\Vertex[x=2,y=6,style=node]{0110}
+	\Vertex[x=6,y=6,style=node]{0111}
+	\Vertex[x=10,y=0,style=node]{1000}
+	\Vertex[x=14,y=0,style=node]{1001}
+	\Vertex[x=12,y=2,style=node]{1010}
+	\Vertex[x=16,y=2,style=node]{1011}
+	\Vertex[x=10,y=4,style=node]{1100}
+	\Vertex[x=14,y=4,style=node]{1101}
+	\Vertex[x=12,y=6,style=node]{1110}
+	\Vertex[x=16,y=6,style=node]{1111}
+
+	\Edge(0000)(0001)
+	\Edge(0000)(0010)
+	\Edge(0000)(0100)
+	\Edge(0001)(0011)
+	\Edge(0001)(0101)
+	\Edge(0010)(0110)
+	\Edge(0010)(0011)
+	\Edge(0011)(0111)
+	\Edge(0101)(0111)
+	\Edge(0110)(0111)
+	\Edge(0100)(0101)
+	\Edge(0100)(0110)
+	
+
+	\Edge(1000)(1001)
+	\Edge(1000)(1010)
+	\Edge(1000)(1100)
+	\Edge(1001)(1011)
+	\Edge(1001)(1101)
+	\Edge(1010)(1110)
+	\Edge(1010)(1011)
+	\Edge(1011)(1111)
+	\Edge(1101)(1111)
+	\Edge(1110)(1111)
+	\Edge(1100)(1101)
+	\Edge(1100)(1110)
+
+
+	\Edge[style=bend right](0000)(1000)
+	\Edge[style=bend right](0001)(1001)
+	\Edge[style=bend right](0010)(1010)
+	\Edge[style=bend right](0011)(1011)
+	\Edge[style=bend left](0100)(1100)
+	\Edge[style=bend left](0101)(1101)
+	\Edge[style=bend left](0110)(1110)
+	\Edge[style=bend left](0111)(1111)
+
+      \end{tikzpicture}
+    \end{center}
+
+  }
+  \frame{
+    \frametitle{Folded Clos Network Example}
+    \begin{center}
+      Most common approach for small or medium-scale Infiniband fabrics; each leaf has 1 link to each spine
       \begin{tikzpicture}[>=latex,line join=bevel,transform shape,scale=0.70]
 	\GraphInit
 	\Vertex[y=0,x=-3,style=node,L=spine1]{s1}
@@ -723,91 +849,142 @@
 
   }
 
-
-%   \subsection{IB vs. Ethernet}
-  
-% 
-\section{Building your own HPC Cluster}
-
-  \frame{
-    \frametitle{Components needed to build an HPC Cluster}
-
-    To build your own HPC cluster, consider the following components:
-
-    \begin{itemize}
-%       \pause\item System Hardware
-%       \pause\item Network Hardware
-      \pause\item Hardware
-      \pause\item Operating System Software
-      \pause\item Infrastructure Software
-      \pause\item Computational Software
-    \end{itemize}
-
-  }
-
-  \subsection{Hardware}
+  \subsection{Upper Layer Protocol Stack Components}
     \frame{
-      \frametitle{Hardware Considerations}
-      When considering system hardware, be aware of the following considerations:
+      \frametitle{Upper Layer Stack}
+      The protocol stack includes several optional components to enable application communication:
       \begin{itemize}
-	\pause\item If a process is using resources on multiple nodes, it's significantly easier if the nodes' hardware is homogeneous.
-	\pause\item You need to know the task's or software's requirements, and build the system appropriately in the following areas:
+	\item[SRP] SCSI RDMA Protocol - Block Storage Protocol; competing with iSER
+	\item[iSER] iSCSI extensions for RDMA - Block Storage Protocol; competing with SRP
+	\item[IPoIB] IP over Infiniband - not the most efficient, but works
+	\item[Verbs] Native IB API for general application use
+	\item[SDP] Sockets Direct Protocol - basically sockets protocol for IB
+      \end{itemize}
+
+    }
+
+    \frame{
+      \frametitle{Other (usu. Proprietary) Extensions}
+	Other extensions exist, usually implemented in a proprietary fashion, including the following:
 	\begin{itemize}
-	  \pause\item Processor features and speed
-	  \pause\item RAM
-	  \pause\item Network Performance (bandwidth and latency)
-	  \pause\item Storage requirements (total capacity, throughput, and IOPS)
+	  \item[FCoIB] Fibre-Channel traffic over IB
+	  \item[ETHoIB] Ethernet over IB
+	  \item[FlexBoot] PXE-like network booting
 	\end{itemize}
-      \end{itemize}
 
     }
-  \subsection{OS Software}
 
     \frame{
-      \frametitle{Compute Node Operating System}
+      \frametitle{Message Passing}
+      Any application can utilize IB, if it is written or ported to do so.  In HPC, most applications use a message-passing library like MPI, which in turn uses the Verbs API to do its work.
+
+      Several dozen MPI implementations exist, but the most common that can utilize Infiniband are:
       \begin{itemize}
-	\pause\item Each computational node needs to have a functioning operating system.  \emph{Linux} is the most common, usually installed either through a \emph{golden image} approach (usually vendor-provided), or scalable, scripted installer, eg. \emph{NPACI Rocks}.
-	\pause\item You will need to make sure your computational software is supported on the system.  For example, many more commercial software packages run on \emph{RedHat Enterprise Linux} than on \emph{Ubuntu}.
+	\item OpenMPI
+	\item MVAPICH
+	\item Intel MPI
+	\item HP/Platform MPI
       \end{itemize}
 
     }
+  
+  \subsection{Other Considerations - Expense}
 
-  \subsection{Infrastructure Software}
     \frame{
-      \frametitle{Organizing the effort}
+      \frametitle{Costs}
+      In general:
       \begin{itemize}
-	\pause\item If you're the only person using the system, you can just run your tasks directly.  If, however, you need to allow multiple users to have access, etc., you will probably need a queuing mechanism, eg. Moab/Torque, PBSPro, Slurm, SGE, LoadLeveler, LSF
-	\pause\item You will need to monitor the system for hardware and software failures.  Think something like \emph{ganglia}.
-      \end{itemize}
-    }
-
-  \subsection{Computational Software}
-    \frame{
-      \frametitle{Actually doing work}
-      In order for the system to be useful, you need software to do some calculations.  Some things to consider here:
-      \begin{itemize}
-	\pause\item How will I get the software to utilize all the resources (eg. processors) available?  Do I need to use some form of communication framework like MPI to coordinate efforts, or will I just launch independent tasks
-	\pause\item Is there any form of tuning that I can do to make the software more efficient?  For example, if it's compiled software, am I taking advantage of compilation optimizations, eg. SSE, or specialty BLAS implementations like Intel MKL or GotoBlas?
+	\item Gigabit Ethernet comes on-board for most hosts, so it has very little cost
+	\item 10-Gigabit Ethernet is coming on-board for some hosts
+	\item Per-port cost for 4xQDR Infiniband (40 Gb/s) is usually less than 10-Gigabit Ethernet, but this changes
+	\item Infiniband HCAs can be repurposed (via firmware change) to be 10-Gigabit Ethernet NICs
       \end{itemize}
 
     }
 
+% \section{Building your own HPC Cluster}
+% 
+%   \frame{
+%     \frametitle{Components needed to build an HPC Cluster}
+% 
+%     To build your own HPC cluster, consider the following components:
+% 
+%     \begin{itemize}
+% %       \pause\item System Hardware
+% %       \pause\item Network Hardware
+%       \pause\item Hardware
+%       \pause\item Operating System Software
+%       \pause\item Infrastructure Software
+%       \pause\item Computational Software
+%     \end{itemize}
+% 
+%   }
+% 
+%   \subsection{Hardware}
+%     \frame{
+%       \frametitle{Hardware Considerations}
+%       When considering system hardware, be aware of the following considerations:
+%       \begin{itemize}
+% 	\pause\item If a process is using resources on multiple nodes, it's significantly easier if the nodes' hardware is homogeneous.
+% 	\pause\item You need to know the task's or software's requirements, and build the system appropriately in the following areas:
+% 	\begin{itemize}
+% 	  \pause\item Processor features and speed
+% 	  \pause\item RAM
+% 	  \pause\item Network Performance (bandwidth and latency)
+% 	  \pause\item Storage requirements (total capacity, throughput, and IOPS)
+% 	\end{itemize}
+%       \end{itemize}
+% 
+%     }
+%   \subsection{OS Software}
+% 
+%     \frame{
+%       \frametitle{Compute Node Operating System}
+%       \begin{itemize}
+% 	\pause\item Each computational node needs to have a functioning operating system.  \emph{Linux} is the most common, usually installed either through a \emph{golden image} approach (usually vendor-provided), or scalable, scripted installer, eg. \emph{NPACI Rocks}.
+% 	\pause\item You will need to make sure your computational software is supported on the system.  For example, many more commercial software packages run on \emph{RedHat Enterprise Linux} than on \emph{Ubuntu}.
+%       \end{itemize}
+% 
+%     }
+% 
+%   \subsection{Infrastructure Software}
+%     \frame{
+%       \frametitle{Organizing the effort}
+%       \begin{itemize}
+% 	\pause\item If you're the only person using the system, you can just run your tasks directly.  If, however, you need to allow multiple users to have access, etc., you will probably need a queuing mechanism, eg. Moab/Torque, PBSPro, Slurm, SGE, LoadLeveler, LSF
+% 	\pause\item You will need to monitor the system for hardware and software failures.  Think something like \emph{ganglia}.
+%       \end{itemize}
+%     }
+% 
+%   \subsection{Computational Software}
+%     \frame{
+%       \frametitle{Actually doing work}
+%       In order for the system to be useful, you need software to do some calculations.  Some things to consider here:
+%       \begin{itemize}
+% 	\pause\item How will I get the software to utilize all the resources (eg. processors) available?  Do I need to use some form of communication framework like MPI to coordinate efforts, or will I just launch independent tasks
+% 	\pause\item Is there any form of tuning that I can do to make the software more efficient?  For example, if it's compiled software, am I taking advantage of compilation optimizations, eg. SSE, or specialty BLAS implementations like Intel MKL or GotoBlas?
+%       \end{itemize}
+% 
+%     }
+% 
+% 
+%   \section{Summary/Conclusions}
+% 
+%   \frame{
+%     \frametitle{What does this all mean?}
+%     \begin{itemize}
+%       \pause\item In general, clusters of commodity hardware are the cheapest approaches to HPC, but it will vary depending on situation.
+%       \pause\item It is possible to set up a small HPC cluster without much hardware cost, or any real software cost.  Just don't expect anything \"{u}ber-cool like Infiniband.
+%       \pause\item You absolutely must understand your software, and its requirements
+%       \pause\item Not everything works like Ethernet and TCP/IP.  Network technologies like Fibre Channel and Infiniband throw away a number of the basic assumptions of Ethernet.
+%     \end{itemize}
+%   }
 
-  \section{Summary/Conclusions}
-
-  \frame{
-    \frametitle{What does this all mean?}
-    \begin{itemize}
-      \pause\item In general, clusters of commodity hardware are the cheapest approaches to HPC, but it will vary depending on situation.
-      \pause\item It is possible to set up a small HPC cluster without much hardware cost, or any real software cost.  Just don't expect anything \"{u}ber-cool like Infiniband.
-      \pause\item You absolutely must understand your software, and its requirements
-      \pause\item Not everything works like Ethernet and TCP/IP.  Network technologies like Fibre Channel and Infiniband throw away a number of the basic assumptions of Ethernet.
-    \end{itemize}
-  }
+\section{Questions}
 
   \frame{
     \frametitle{Questions?}
-%     Any questions?
+    Any questions?
   }
 
 
