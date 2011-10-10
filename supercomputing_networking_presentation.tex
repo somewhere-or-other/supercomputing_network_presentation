@@ -1,3 +1,5 @@
+\pdfoptionpdfminorversion=5
+
 \documentclass[handout,hyperref={pdfpagelabels=false}]{beamer}
 % \documentclass[hyperref={pdfpagelabels=false}]{beamer}
 
@@ -21,6 +23,9 @@
 \usepackage{multirow}
 
 \usepackage{subfigure}
+
+
+
 
 % Definition for subfloat to allow us to use listings/verbatim inside subfigures:
 \newbox\subfigbox % Create a box to hold the subfigure. 
@@ -902,6 +907,28 @@
 
     }
 
+
+  \subsection{Performance}
+
+  \subsubsection{Bandwidth Comparison}
+
+    \frame{
+      \begin{figure}
+	\includegraphics[scale=0.85]{IB_vs_Eth_Bandwidth.pdf}
+      \end{figure}
+
+    }
+
+  \subsubsection{Latency Comparison}
+    \frame{
+      \begin{figure}
+	\includegraphics[scale=0.85]{IB_vs_Eth_latency.pdf}
+      \end{figure}
+
+    }
+
+
+
 % \section{Building your own HPC Cluster}
 % 
 %   \frame{
@@ -979,6 +1006,7 @@
 %       \pause\item Not everything works like Ethernet and TCP/IP.  Network technologies like Fibre Channel and Infiniband throw away a number of the basic assumptions of Ethernet.
 %     \end{itemize}
 %   }
+
 
 \section{Questions}
 
