@@ -267,6 +267,39 @@
       \end{small}
     }
 
+
+  \subsection{Measured Performance}
+
+  \frame{
+    \frametitle{Performance at BYU's FSL}
+    The graphs shown in the next couple of slides represent the bandwidth and latency performance of 4xDDR Infiniband vs 1Gb/s Ethernet at the Fulton Supercomputing Lab.
+
+    \begin{itemize}
+      \item All tests were performed host-to-host with one intervening switch (eg. host-switch-host)
+      \item All tests utilize increasing message sizes, to demonstrate where one effect ends and the other starts
+      \item Tests were performed using the ``osu\_bw'' and ``osu\_latency'' binaries from the OSU Micro-Benchmarks for MPI (see \url{http://mvapich.cse.ohio-state.edu/benchmarks/})
+    \end{itemize}
+
+  }
+
+  \subsubsection{Bandwidth Comparison}
+
+    \frame{
+      \begin{figure}
+	\includegraphics[scale=0.85]{IB_vs_Eth_Bandwidth.pdf}
+      \end{figure}
+
+    }
+
+  \subsubsection{Latency Comparison}
+    \frame{
+      \begin{figure}
+	\includegraphics[scale=0.85]{IB_vs_Eth_latency.pdf}
+      \end{figure}
+
+    }
+
+
   \subsection{Subnet Management}
 
     \frame{
@@ -908,24 +941,6 @@
     }
 
 
-  \subsection{Performance}
-
-  \subsubsection{Bandwidth Comparison}
-
-    \frame{
-      \begin{figure}
-	\includegraphics[scale=0.85]{IB_vs_Eth_Bandwidth.pdf}
-      \end{figure}
-
-    }
-
-  \subsubsection{Latency Comparison}
-    \frame{
-      \begin{figure}
-	\includegraphics[scale=0.85]{IB_vs_Eth_latency.pdf}
-      \end{figure}
-
-    }
 
 
 

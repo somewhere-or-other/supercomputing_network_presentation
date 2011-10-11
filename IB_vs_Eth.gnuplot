@@ -1,7 +1,7 @@
 set title "Latency Comparison - 4xDDR IB vs 1Gb/s Ethernet"
 set grid
 set log xy
-set xlabel "Problem Size (bytes)"
+set xlabel "Message Payload Size (bytes)"
 set ylabel "Latency (microsec)"
 set terminal pdf color dashed
 set output "IB_vs_Eth_latency.pdf"
@@ -11,7 +11,7 @@ plot "bw_latency_ethvsib_comparison.gnuplot.input" u 1:2 title "4xDDR_IB", "bw_l
 set title "Bandwidth Comparison - 4xDDR IB vs 1Gb/s Ethernet"
 set grid
 set log xy
-set xlabel "Problem Size (bytes)"
+set xlabel "Message Payload Size (bytes)"
 set ylabel "Bandwidth (MB/s)"
 set terminal pdf color dashed
 set output "IB_vs_Eth_Bandwidth.pdf"
