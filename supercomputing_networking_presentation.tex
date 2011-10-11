@@ -1,6 +1,6 @@
 \pdfoptionpdfminorversion=5
 
-\documentclass[handout,hyperref={pdfpagelabels=false}]{beamer}
+\documentclass[hyperref={pdfpagelabels=false}]{beamer}
 % \documentclass[hyperref={pdfpagelabels=false}]{beamer}
 
 \usepackage[utf8x]{inputenc}
@@ -90,11 +90,11 @@
     In HPC, speedup comes from one of two sources:
     
     \begin{itemize}
-      \item Using faster resources (eg. faster clock speeds)
-      \item Using more resources (eg. using more processors) or \emph{Parallelism}
+      \pause\item Using faster resources (eg. faster clock speeds)
+      \pause\item Using more resources (eg. using more processors) or \emph{Parallelism}
     \end{itemize}
 
-    Physics generally limits us on the faster resources, so we spend more time on parallelism.
+    \pause Physics generally limits us on the faster resources, so we spend more time on parallelism.
 
   }
 
@@ -104,11 +104,15 @@
     \begin{itemize}
       \item When utilizing multiple resources (eg. multiple processors), the program must:
       \begin{itemize}
-	\item Split up the workload
-	\item Provide necessary coordination among resources
+	\pause\item Split up the workload
+	\pause\item Provide necessary coordination among resources
       \end{itemize}
-      \item The algorithm and data determine the nature of communication needs
-      \item In general, for HPC problems, communication is key.
+      \pause\item The algorithm and data determine the nature of communication needs
+      \pause\item In general, for HPC problems, communication is key.
+      \begin{itemize}
+	\pause\item For inter-process communication
+	\pause\item For communicating with storage
+      \end{itemize}
     \end{itemize}
 
   }
@@ -126,8 +130,7 @@
 	\end{itemize}
 	\pause\item Accelerators
 	\begin{itemize}
-	  \pause\item GPU
-	  \pause\item Intel MIC
+	  \pause\item Manycore (GPU \& Intel MIC)
 	  \pause\item FPGA
 	  \pause\item Cell
 	\end{itemize}
@@ -164,11 +167,11 @@
 	\item extremely high bandwidth
 	\pause\item extremely low latency (one-way < 10 $\mu$s, compared to approx. 32 $\mu$s for 1GbE)
       \end{itemize}
-      \item Speedup comes mostly from:
+      \pause\item Speedup comes mostly from:
       \begin{itemize}
 	\item Short protocol stack (very little above layer 2)
-	\item Low-latency switching (very little decision making in the switch)
-	\item Remote Direct Memory Access (RDMA)
+	\pause\item Low-latency switching (very little decision making in the switch)
+	\pause\item Remote Direct Memory Access (RDMA)
       \end{itemize}
     \end{itemize}
 
@@ -277,7 +280,7 @@
     \begin{itemize}
       \item All tests were performed host-to-host with one intervening switch (eg. host-switch-host)
       \item All tests utilize increasing message sizes, to demonstrate where one effect ends and the other starts
-      \item Tests were performed using the ``osu\_bw'' and ``osu\_latency'' binaries from the OSU Micro-Benchmarks for MPI (see \url{http://mvapich.cse.ohio-state.edu/benchmarks/})
+      \item Tests were performed using the ``osu\_bw'' and ``osu\_latency'' binaries from the OSU Micro-Benchmarks for MPI (a.k.a. ``OMB'')\footnote{\url{http://mvapich.cse.ohio-state.edu/benchmarks/}}
     \end{itemize}
 
   }
@@ -316,7 +319,15 @@
   \subsection{Topologies}
     \frame{
       \frametitle{Infiniband Topologies}
-      Infinband puts very little restriction on the physical topology of the network.  Basically, since the Subnet Manager loads all the forwarding tables, as long as you can build an appropriate graph parsing algorithm, and implement it in a subnet manager, you can use a topology.  This allows some much more interesting topologies than the common Ethernet and TCP/IP networks usually use.\footnote{Technically you can use any topology with Ethernet and TCP/IP as well, but it takes a huge amount of work, with lots of VLANs and stub routers, etc., to work around the Spanning-tree protocols.  I don't recommend trying it.}
+      Infinband puts very little restriction on the physical topology of the network.  
+      \begin{itemize}
+	\pause\item The Subnet Manager loads all the forwarding tables into the switches
+	\begin{itemize}
+	 \pause \item as long as you can build an appropriate graph parsing algorithm, and implement it in a subnet manager, you can use a topology
+	  \pause\item allows some much more interesting topologies than those commonly Ethernet and TCP/IP networks usually use.\footnote{Technically you can use any topology with Ethernet as well.  It just takes a huge amount of very-messy work, for very little benefit.  I don't recommend trying it.}
+	\end{itemize}
+      \end{itemize}
+
 
     }
 
@@ -339,7 +350,7 @@
 
     \frame{
       \frametitle{Fat Tree Example}
-      A \emph{Fat Tree} is basically a tree with increased bandwidth (faster links or more links) between upper tiers relative to lower tiers
+      A \emph{Fat Tree} is basically a tree with increased bandwidth (faster links or more links) between upper tiers relative to lower tiers; Ethernet has no problems with this one, so it's not terribly exciting
       \begin{center}
 	\begin{tikzpicture}[>=latex,line join=bevel,scale=0.5]
 	%%
@@ -376,9 +387,13 @@
 
   \frame{
     \frametitle{Fully-connected Mesh Example}
-    Shortest hop-count (1 hop) from any point to any other point; takes a huge amount of cables.
+    \begin{itemize}
+      \item<1->Pro: Shortest hop-count (1 hop) from any point to any other point
+      \item<2->Con: takes a huge amount of cables, and the cable count increases very, very quickly.
+    \end{itemize}
+
     \begin{center}
-	\begin{tikzpicture}[>=latex,line join=bevel,scale=0.4]
+	\begin{tikzpicture}[>=latex,line join=bevel,scale=0.32]
 	  \node (A) at (336bp,81bp) [node] {A};
 	  \node (C) at (108bp,41bp) [node] {C};
 	  \node (B) at (378bp,197bp) [node] {I};
@@ -431,11 +446,15 @@
 
   \frame{
     \frametitle{Rectangular/Toroidal Mesh Example}
-    Excellent for large topologies (no spine switches to buy); higher hop count than other options, depending on size
+    \begin{itemize}
+      \item<1->Pro: Excellent for large topologies (no spine switches to buy)
+      \item<2->Con: Higher hop count than other options, depending on size and shape
+    \end{itemize}
+
     \begin{center}
       \begin{figure}
 	\subfigure[Rectangular]{
-	  \begin{tikzpicture}[>=latex,line join=bevel,scale=1.2]
+	  \begin{tikzpicture}[>=latex,line join=bevel,scale=1.0]
 	    \GraphInit
       %       \SetVertexNormal[VertexStyle]
 	    \Vertex[x=0,y=3,style=node]{A}
@@ -481,7 +500,7 @@
 	  \end{tikzpicture}
 	}%end of subfigure
 	\subfigure[Toroidal]{
-	  \begin{tikzpicture}[>=latex,line join=bevel,scale=1.2]
+	  \begin{tikzpicture}[>=latex,line join=bevel,scale=1.0]
 	    \GraphInit
       %       \SetVertexNormal[VertexStyle]
 	    \Vertex[x=0,y=3,style=node]{A}
@@ -541,10 +560,14 @@
 
   \frame{
     \frametitle{Hypercube example (4-d)}
-    Used rarely; for \emph{d} dimensions, no more than \emph{d} hops from any other point in the topology.
+    \begin{itemize}
+      \item<1->Pro: for \emph{d} dimensions, no more than \emph{d} hops from any other point in the topology
+      \item<2->Con: cables/ports at each endpoint increase linearly with the dimension
+    \end{itemize}
+
 
     \begin{center}
-      \begin{tikzpicture}[>=latex,line join=bevel,transform shape,scale=0.5]
+      \begin{tikzpicture}[>=latex,line join=bevel,transform shape,scale=0.45]
 	\GraphInit
 	\Vertex[x=0,y=0,style=node]{0000}
 	\Vertex[x=4,y=0,style=node]{0001}
@@ -607,8 +630,17 @@
   \frame{
     \frametitle{Folded Clos Network Example}
     \begin{center}
-      Most common approach for small or medium-scale Infiniband fabrics; each leaf has 1 link to each spine
-      \begin{tikzpicture}[>=latex,line join=bevel,transform shape,scale=0.70]
+      \begin{itemize}
+	\item Pros:
+	\begin{itemize}
+	  \item<1->Most common approach for small or medium-scale Infiniband fabrics
+	  \item<2->Well understood (how larger IB switches are designed internally)
+	  \item<3->Redundant; 1 link from each leaf to each spine
+	\end{itemize}
+	\item<4->Con: Scalability limited by the port count of spine \& leaf switches
+      \end{itemize}
+
+      \begin{tikzpicture}[>=latex,line join=bevel,transform shape,scale=0.54]
 	\GraphInit
 	\Vertex[y=0,x=-3,style=node,L=spine1]{s1}
 	\Vertex[y=0,x=-1,style=node,L=spine2]{s2}
@@ -892,11 +924,11 @@
       \frametitle{Upper Layer Stack}
       The protocol stack includes several optional components to enable application communication:
       \begin{itemize}
-	\item[SRP] SCSI RDMA Protocol - Block Storage Protocol; competing with iSER
+	\pause\item[SRP] SCSI RDMA Protocol - Block Storage Protocol; competing with iSER
 	\item[iSER] iSCSI extensions for RDMA - Block Storage Protocol; competing with SRP
-	\item[IPoIB] IP over Infiniband - not the most efficient, but works
-	\item[Verbs] Native IB API for general application use
-	\item[SDP] Sockets Direct Protocol - basically sockets protocol for IB
+	\pause\item[IPoIB] IP over Infiniband - not the most efficient, but works
+	\pause\item[Verbs] Native IB API for general application use
+	\pause\item[SDP] Sockets Direct Protocol - basically sockets protocol for IB
       \end{itemize}
 
     }
@@ -905,23 +937,25 @@
       \frametitle{Other (usu. Proprietary) Extensions}
 	Other extensions exist, usually implemented in a proprietary fashion, including the following:
 	\begin{itemize}
-	  \item[FCoIB] Fibre-Channel traffic over IB
-	  \item[ETHoIB] Ethernet over IB
-	  \item[FlexBoot] PXE-like network booting
+	  \pause\item[FCoIB] Fibre-Channel traffic over IB
+	  \pause\item[ETHoIB] Ethernet over IB
+	  \pause\item[FlexBoot] PXE-like network booting
 	\end{itemize}
 
     }
 
     \frame{
       \frametitle{Message Passing}
-      Any application can utilize IB, if it is written or ported to do so.  In HPC, most applications use a message-passing library like MPI, which in turn uses the Verbs API to do its work.
-
-      Several dozen MPI implementations exist, but the most common that can utilize Infiniband are:
       \begin{itemize}
-	\item OpenMPI
-	\item MVAPICH
-	\item Intel MPI
-	\item HP/Platform MPI
+	\item In HPC, most applications use a message-passing library like MPI, which in turn uses the Verbs API to do its work.
+	\item Several dozen MPI implementations exist, but the most common that can utilize Infiniband are:
+      
+	\begin{itemize}
+	  \item OpenMPI
+	  \item MVAPICH
+	  \item Intel MPI
+	  \item HP/Platform MPI
+	\end{itemize}
       \end{itemize}
 
     }
@@ -933,9 +967,9 @@
       In general:
       \begin{itemize}
 	\item Gigabit Ethernet comes on-board for most hosts, so it has very little cost
-	\item 10-Gigabit Ethernet is coming on-board for some hosts
-	\item Per-port cost for 4xQDR Infiniband (40 Gb/s) is usually less than 10-Gigabit Ethernet, but this changes
-	\item Infiniband HCAs can be repurposed (via firmware change) to be 10-Gigabit Ethernet NICs
+	\pause\item 10-Gigabit Ethernet is coming on-board for some hosts
+	\pause\item Per-port cost for 4xQDR Infiniband (40 Gb/s) is usually less than 10-Gigabit Ethernet, but this changes over time
+	\pause\item 4xQDR (40Gb/s) HCAs can be repurposed (via firmware change) to be 10-Gigabit Ethernet NICs
       \end{itemize}
 
     }
