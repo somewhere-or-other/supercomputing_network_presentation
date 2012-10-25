@@ -1,7 +1,9 @@
 \pdfoptionpdfminorversion=5
 
-\documentclass[handout,hyperref={pdfpagelabels=false}]{beamer}
+% \documentclass[handout,hyperref={pdfpagelabels=false}]{beamer}
 % \documentclass[hyperref={pdfpagelabels=false}]{beamer}
+% \documentclass[hyperref]{beamer}
+\documentclass[handout]{beamer}
 
 \usepackage[utf8x]{inputenc}
 %\usepackage{default}
@@ -57,7 +59,7 @@
 
 \author{Lloyd Brown}
 \title{High-Performance Computing Networks at BYU}
-\date{October 11, 2011}
+\date{November 1, 2012}
 
 
 \begin{document}
@@ -68,6 +70,10 @@
   \frame{
     \tableofcontents
   }
+
+\section{What is HPC}
+
+
 
 \section{What is HPC?}
 
@@ -108,50 +114,77 @@
 	\pause\item Provide necessary coordination among resources
       \end{itemize}
       \pause\item The algorithm and data determine the nature of communication needs
-      \pause\item In general, for HPC problems, communication is key.
+      \pause\item Therefore for HPC problems, communication is key.
       \begin{itemize}
 	\pause\item For inter-process communication
-	\pause\item For communicating with storage
+	\pause\item For communicating with data storage
       \end{itemize}
     \end{itemize}
 
   }
 
+%   \frame{
+%     \frametitle{What kinds of HPC systems are out there?}
+%     There are two major categories of HPC systems:
+%     \begin{itemize}
+%       \pause\item Systems which utilize specialty hardware, including:
+%       \begin{itemize}
+% 	\pause\item Processors
+% 	\begin{itemize}
+% 	  \pause\item Vector Processors (eg. Cray)
+% 	  \pause\item Specialty Serial Processors (eg. Itanium, Power5, etc.)
+% 	\end{itemize}
+% 	\pause\item Accelerators
+% 	\begin{itemize}
+% 	  \pause\item Manycore (GPU \& Intel MIC)
+% 	  \pause\item FPGA
+% 	  \pause\item Cell
+% 	\end{itemize}
+% 	\pause\item Specialty/Proprietary Interconnects
+% 	\begin{itemize}
+% 	  \pause\item Infiniband
+% 	  \pause\item NUMALink
+% 	\end{itemize}
+% % (eg. NUMALink, Infiniband, Quadrics, Myrinet, etc.)
+%       \end{itemize}
+%       \pause\item Commodity Hardware:
+%       \begin{itemize}
+% 	\pause\item Stock processors (eg. x86, x86\_64)
+% 	\pause\item Stock interconnects (Ethernet)
+%       \end{itemize}
+%     \end{itemize}
+% 
+%   }
+% 
+% 
+% 
+% 
+% 
+\section{Types of Communication}
   \frame{
-    \frametitle{What kinds of HPC systems are out there?}
-    There are two major categories of HPC systems:
+    \frametitle{What kind of communication are we talking about?}
     \begin{itemize}
-      \pause\item Systems which utilize specialty hardware, including:
+      \pause\item Programs that utilize multiple processors to split up work, need to communicate between threads or processes, to coordinate efforts, report on results, etc.
+      \pause\item Communication between threads/processes on the same host (``\emph{Intra}-node'' communication) is extremely fast (usually via shared memory)
+      \pause\item If the processes are on different hosts, we have to go out to some communication fabric (``\emph{Inter}-node'' communication)
       \begin{itemize}
-	\pause\item Processors
-	\begin{itemize}
-	  \pause\item Vector Processors (eg. Cray)
-	  \pause\item Specialty Serial Processors (eg. Itanium, Power5, etc.)
-	\end{itemize}
-	\pause\item Accelerators
-	\begin{itemize}
-	  \pause\item Manycore (GPU \& Intel MIC)
-	  \pause\item FPGA
-	  \pause\item Cell
-	\end{itemize}
-	\pause\item Specialty/Proprietary Interconnects
-	\begin{itemize}
-	  \pause\item Infiniband
-	  \pause\item NUMALink
-	\end{itemize}
-% (eg. NUMALink, Infiniband, Quadrics, Myrinet, etc.)
-      \end{itemize}
-      \pause\item Commodity Hardware:
-      \begin{itemize}
-	\pause\item Stock processors (eg. x86, x86\_64)
-	\pause\item Stock interconnects (Ethernet)
+	\pause\item There's a lot of research in speeding up \emph{intra}-node communication, but that's more of a Computer Science or Electrical Engineering problem.  We'll sepend our time today on \emph{inter}-node communication
       \end{itemize}
     \end{itemize}
 
   }
+  
+  \frame{
+    \frametitle{Technologies for \emph{inter}-node communication}
+    Examples of technologies for \emph{inter}-node communication include:
+    \begin{itemize}
+      \pause\item Ethernet
+      \pause\item Fibre Channel
+      \pause\item Infiniband
+      \pause\item RS-232
+    \end{itemize}
 
-
-
+  }
 
 
 \section{Infiniband}
@@ -177,7 +210,7 @@
 
   }
 
-  \subsection{Terminology}
+%   \subsection{Terminology}
 
   \frame{
     \frametitle{Terms}
@@ -214,28 +247,28 @@
     \end{center}
 
   }
-% 
+% % 
+% % %   \frame{
+% % %     \frametitle{Connectors}
+% % %     
+% % %   }
+% % 
 % %   \frame{
-% %     \frametitle{Connectors}
+% %     \frametitle{Does this look familiar?}
+% %     \begin{itemize}
+% %       \item Is there any other common computer technology that looks like this from a physical layer?  Using multiple lanes, with per-lane speed doubling each successive iteration of the standard?\\
+% % %     \pause Any gamers in the room?
+% % %     \pause What is the most bandwidth and latency sensitive hardware used for gaming?  Requires the fastest communication?
+% % %     \pause How about PCIe?
 % %     
+% % 	
+% % 
+% % %       \pause\centering{How about}\centering{\pause\strong{PCIe}}
+% %       \pause\item How about \emph{PCI-Express}?
+% %     \end{itemize}
 % %   }
-% 
-%   \frame{
-%     \frametitle{Does this look familiar?}
-%     \begin{itemize}
-%       \item Is there any other common computer technology that looks like this from a physical layer?  Using multiple lanes, with per-lane speed doubling each successive iteration of the standard?\\
-% %     \pause Any gamers in the room?
-% %     \pause What is the most bandwidth and latency sensitive hardware used for gaming?  Requires the fastest communication?
-% %     \pause How about PCIe?
-%     
-% 	
-% 
-% %       \pause\centering{How about}\centering{\pause\strong{PCIe}}
-%       \pause\item How about \emph{PCI-Express}?
-%     \end{itemize}
-%   }
-% 
-% 
+% % 
+% % 
   \subsection{Encoding}
     \frame{
       \frametitle{Encoding Overhead}
@@ -316,7 +349,7 @@
 
     }
 
-  \subsection{Topologies}
+\section{Topologies}
     \frame{
       \frametitle{Infiniband Topologies}
       Infinband puts very little restriction on the physical topology of the network.  
@@ -338,7 +371,7 @@
 	\pause\item Tree/Fat-Tree
 	\pause\item Fully-connected Mesh
 	\pause\item Rectangular Mesh
-	\pause\item Toroidal Mesh
+	\pause\item Torus
 	\pause\item Hypercube
 	\pause\item Folded-Clos Network
       \end{itemize}
@@ -393,59 +426,108 @@
     \end{itemize}
 
     \begin{center}
-	\begin{tikzpicture}[>=latex,line join=bevel,scale=0.32]
-	  \node (A) at (336bp,81bp) [node] {A};
-	  \node (C) at (108bp,41bp) [node] {C};
-	  \node (B) at (378bp,197bp) [node] {I};
-	  \node (E) at (28bp,259bp) [node] {E};
-	  \node (D) at (28bp,135bp) [node] {D};
-	  \node (G) at (229bp,375bp) [node] {G};
-	  \node (F) at (108bp,353bp) [node] {F};
-	  \node (I) at (229bp,19bp) [node] {B};
-	  \node (H) at (336bp,313bp) [node] {H};
-	  \draw [] (D) -- (H);
-	  \draw [] (E) -- (F);
-	  \draw [] (E) -- (I);
-	  \draw [] (D) -- (G);
-	  \draw [] (C) -- (I);
-	  \draw [] (H) -- (I);
-	  \draw [] (D) -- (E);
-	  \draw [] (A) -- (F);
-	  \draw [] (G) -- (I);
-	  \draw [] (B) -- (F);
-	  \draw [] (C) -- (D);
-	  \draw [] (A) -- (B);
-	  \draw [] (D) -- (I);
-	  \draw [] (E) -- (H);
-	  \draw [] (C) -- (H);
-	  \draw [] (F) -- (G);
-	  \draw [] (B) -- (G);
-	  \draw [] (A) -- (E);
-	  \draw [] (F) -- (H);
-	  \draw [] (B) -- (C);
-	  \draw [] (C) -- (G);
-	  \draw [] (B) -- (H);
-	  \draw [] (A) -- (D);
-	  \draw [] (A) -- (I);
-	  \draw [] (B) -- (D);
-	  \draw [] (C) -- (F);
-	  \draw [] (E) -- (G);
-	  \draw [] (F) -- (I);
-	  \draw [] (D) -- (F);
-	  \draw [] (A) -- (C);
-	  \draw [] (B) -- (I);
-	  \draw [] (A) -- (G);
-	  \draw [] (A) -- (H);
-	  \draw [] (G) -- (H);
-	  \draw [] (B) -- (E);
-	  \draw [] (C) -- (E);
-    %
+	
+	\begin{tikzpicture}[>=latex,line join=bevel,scale=1.6]
+% 	  \node (A) at (336bp,81bp) [node] {A};
+% 	  \node (C) at (108bp,41bp) [node] {C};
+% 	  \node (B) at (378bp,197bp) [node] {I};
+% 	  \node (E) at (28bp,259bp) [node] {E};
+% 	  \node (D) at (28bp,135bp) [node] {D};
+% 	  \node (G) at (229bp,375bp) [node] {G};
+% 	  \node (F) at (108bp,353bp) [node] {F};
+% 	  \node (I) at (229bp,19bp) [node] {B};
+% 	  \node (H) at (336bp,313bp) [node] {H};
+% 	  \draw [] (D) -- (H);
+% 	  \draw [] (E) -- (F);
+% % 	  \draw [] (E) -- (I);
+% 	  \draw [] (D) -- (G);
+% % 	  \draw [] (C) -- (I);
+% % 	  \draw [] (H) -- (I);
+% 	  \draw [] (D) -- (E);
+% 	  \draw [] (A) -- (F);
+% % 	  \draw [] (G) -- (I);
+% 	  \draw [] (B) -- (F);
+% 	  \draw [] (C) -- (D);
+% 	  \draw [] (A) -- (B);
+% % 	  \draw [] (D) -- (I);
+% 	  \draw [] (E) -- (H);
+% 	  \draw [] (C) -- (H);
+% 	  \draw [] (F) -- (G);
+% 	  \draw [] (B) -- (G);
+% 	  \draw [] (A) -- (E);
+% 	  \draw [] (F) -- (H);
+% 	  \draw [] (B) -- (C);
+% 	  \draw [] (C) -- (G);
+% 	  \draw [] (B) -- (H);
+% 	  \draw [] (A) -- (D);
+% % 	  \draw [] (A) -- (I);
+% 	  \draw [] (B) -- (D);
+% 	  \draw [] (C) -- (F);
+% 	  \draw [] (E) -- (G);
+% % 	  \draw [] (F) -- (I);
+% 	  \draw [] (D) -- (F);
+% 	  \draw [] (A) -- (C);
+% % 	  \draw [] (B) -- (I);
+% 	  \draw [] (A) -- (G);
+% 	  \draw [] (A) -- (H);
+% 	  \draw [] (G) -- (H);
+% 	  \draw [] (B) -- (E);
+% 	  \draw [] (C) -- (E);
+%     %
+
+      \GraphInit
+\Vertex[style=node,x=-0.383,y=0.924]{A}
+\Vertex[style=node,x=-0.924,y=0.383]{B}
+\Vertex[style=node,x=-0.924,y=-0.383]{C}
+\Vertex[style=node,x=-0.383,y=-0.924]{D}
+\Vertex[style=node,x=0.383,y=-0.924]{E}
+\Vertex[style=node,x=0.924,y=-0.383]{F}
+\Vertex[style=node,x=0.924,y=0.383]{G}
+\Vertex[style=node,x=0.383,y=0.924]{H}
+
+
+
+
+      \Edge(A)(B)
+      \Edge(A)(C)
+      \Edge(A)(D)
+      \Edge(A)(E)
+      \Edge(A)(F)
+      \Edge(A)(G)
+      \Edge(A)(H)
+
+      \Edge(B)(C)
+      \Edge(B)(D)
+      \Edge(B)(E)
+      \Edge(B)(F)
+      \Edge(B)(G)
+      \Edge(B)(H)
+
+      \Edge(C)(D)
+      \Edge(C)(E)
+      \Edge(C)(F)
+      \Edge(C)(G)
+      \Edge(C)(H)
+
+      \Edge(D)(E)
+      \Edge(D)(F)
+      \Edge(D)(G)
+      \Edge(D)(H)
+
+      \Edge(E)(F)
+      \Edge(E)(G)
+      \Edge(E)(H)
+
+      \Edge(F)(G)
+      \Edge(F)(H)
+
+      \Edge(G)(H)
     \end{tikzpicture}
   \end{center}
   }
 
   \frame{
-    \frametitle{Rectangular/Toroidal Mesh Example}
+    \frametitle{Rectangular Mesh / Torus Example}
     \begin{itemize}
       \item<1->Pro: Excellent for large topologies (no spine switches to buy)
       \item<2->Con: Higher hop count than other options, depending on size and shape
@@ -499,7 +581,7 @@
 	    \Edge(O)(P)
 	  \end{tikzpicture}
 	}%end of subfigure
-	\subfigure[Toroidal]{
+	\subfigure[Torus]{
 	  \begin{tikzpicture}[>=latex,line join=bevel,scale=1.0]
 	    \GraphInit
       %       \SetVertexNormal[VertexStyle]
@@ -559,7 +641,7 @@
   }
 
   \frame{
-    \frametitle{Hypercube example (4-d)}
+    \frametitle{Hypercube\footnote{Note that this is really just a special case of a Torus.} example (4-dimensional)}
     \begin{itemize}
       \item<1->Pro: for \emph{d} dimensions, no more than \emph{d} hops from any other point in the topology
       \item<2->Con: cables/ports at each endpoint increase linearly with the dimension
@@ -918,131 +1000,131 @@
     \end{center}
 
   }
-
-  \subsection{Upper Layer Protocol Stack Components}
-    \frame{
-      \frametitle{Upper Layer Stack}
-      The protocol stack includes several optional components to enable application communication:
-      \begin{itemize}
-	\pause\item[SRP] SCSI RDMA Protocol - Block Storage Protocol; competing with iSER
-	\item[iSER] iSCSI extensions for RDMA - Block Storage Protocol; competing with SRP
-	\pause\item[IPoIB] IP over Infiniband - not the most efficient, but works
-	\pause\item[Verbs] Native IB API for general application use
-	\pause\item[SDP] Sockets Direct Protocol - basically sockets protocol for IB
-      \end{itemize}
-
-    }
-
-    \frame{
-      \frametitle{Other (usu. Proprietary) Extensions}
-	Other extensions exist, usually implemented in a proprietary fashion, including the following:
-	\begin{itemize}
-	  \pause\item[FCoIB] Fibre-Channel traffic over IB
-	  \pause\item[ETHoIB] Ethernet over IB
-	  \pause\item[FlexBoot] PXE-like network booting
-	\end{itemize}
-
-    }
-
-    \frame{
-      \frametitle{Message Passing}
-      \begin{itemize}
-	\item In HPC, most applications use a message-passing library like MPI, which in turn uses the Verbs API to do its work.
-	\item Several dozen MPI implementations exist, but the most common that can utilize Infiniband are:
-      
-	\begin{itemize}
-	  \item OpenMPI
-	  \item MVAPICH
-	  \item Intel MPI
-	  \item HP/Platform MPI
-	\end{itemize}
-      \end{itemize}
-
-    }
-  
-  \subsection{Other Considerations - Expense}
-
-    \frame{
-      \frametitle{Costs}
-      In general:
-      \begin{itemize}
-	\item Gigabit Ethernet comes on-board for most hosts, so it has very little cost
-	\pause\item 10-Gigabit Ethernet is coming on-board for some hosts
-	\pause\item Per-port cost for 4xQDR Infiniband (40 Gb/s) is usually less than 10-Gigabit Ethernet, but this changes over time
-	\pause\item 4xQDR (40Gb/s) HCAs can be repurposed (via firmware change) to be 10-Gigabit Ethernet NICs
-      \end{itemize}
-
-    }
-
-
-
-
-
-% \section{Building your own HPC Cluster}
 % 
-%   \frame{
-%     \frametitle{Components needed to build an HPC Cluster}
-% 
-%     To build your own HPC cluster, consider the following components:
-% 
-%     \begin{itemize}
-% %       \pause\item System Hardware
-% %       \pause\item Network Hardware
-%       \pause\item Hardware
-%       \pause\item Operating System Software
-%       \pause\item Infrastructure Software
-%       \pause\item Computational Software
-%     \end{itemize}
-% 
-%   }
-% 
-%   \subsection{Hardware}
+%   \subsection{Upper Layer Protocol Stack Components}
 %     \frame{
-%       \frametitle{Hardware Considerations}
-%       When considering system hardware, be aware of the following considerations:
+%       \frametitle{Upper Layer Stack}
+%       The protocol stack includes several optional components to enable application communication:
 %       \begin{itemize}
-% 	\pause\item If a process is using resources on multiple nodes, it's significantly easier if the nodes' hardware is homogeneous.
-% 	\pause\item You need to know the task's or software's requirements, and build the system appropriately in the following areas:
+% 	\pause\item[SRP] SCSI RDMA Protocol - Block Storage Protocol; competing with iSER
+% 	\item[iSER] iSCSI extensions for RDMA - Block Storage Protocol; competing with SRP
+% 	\pause\item[IPoIB] IP over Infiniband - not the most efficient, but works
+% 	\pause\item[Verbs] Native IB API for general application use
+% 	\pause\item[SDP] Sockets Direct Protocol - basically sockets protocol for IB
+%       \end{itemize}
+% 
+%     }
+% 
+%     \frame{
+%       \frametitle{Other (usu. Proprietary) Extensions}
+% 	Other extensions exist, usually implemented in a proprietary fashion, including the following:
 % 	\begin{itemize}
-% 	  \pause\item Processor features and speed
-% 	  \pause\item RAM
-% 	  \pause\item Network Performance (bandwidth and latency)
-% 	  \pause\item Storage requirements (total capacity, throughput, and IOPS)
+% 	  \pause\item[FCoIB] Fibre-Channel traffic over IB
+% 	  \pause\item[ETHoIB] Ethernet over IB
+% 	  \pause\item[FlexBoot] PXE-like network booting
+% 	\end{itemize}
+% 
+%     }
+% 
+%     \frame{
+%       \frametitle{Message Passing}
+%       \begin{itemize}
+% 	\item In HPC, most applications use a message-passing library like MPI, which in turn uses the Verbs API to do its work.
+% 	\item Several dozen MPI implementations exist, but the most common that can utilize Infiniband are:
+%       
+% 	\begin{itemize}
+% 	  \item OpenMPI
+% 	  \item MVAPICH
+% 	  \item Intel MPI
+% 	  \item HP/Platform MPI
 % 	\end{itemize}
 %       \end{itemize}
 % 
 %     }
-%   \subsection{OS Software}
+%   
+%   \subsection{Other Considerations - Expense}
 % 
 %     \frame{
-%       \frametitle{Compute Node Operating System}
+%       \frametitle{Costs}
+%       In general:
 %       \begin{itemize}
-% 	\pause\item Each computational node needs to have a functioning operating system.  \emph{Linux} is the most common, usually installed either through a \emph{golden image} approach (usually vendor-provided), or scalable, scripted installer, eg. \emph{NPACI Rocks}.
-% 	\pause\item You will need to make sure your computational software is supported on the system.  For example, many more commercial software packages run on \emph{RedHat Enterprise Linux} than on \emph{Ubuntu}.
+% 	\item Gigabit Ethernet comes on-board for most hosts, so it has very little cost
+% 	\pause\item 10-Gigabit Ethernet is coming on-board for some hosts
+% 	\pause\item Per-port cost for 4xQDR Infiniband (40 Gb/s) is usually less than 10-Gigabit Ethernet, but this changes over time
+% 	\pause\item 4xQDR (40Gb/s) HCAs can be repurposed (via firmware change) to be 10-Gigabit Ethernet NICs
 %       \end{itemize}
 % 
 %     }
 % 
-%   \subsection{Infrastructure Software}
-%     \frame{
-%       \frametitle{Organizing the effort}
-%       \begin{itemize}
-% 	\pause\item If you're the only person using the system, you can just run your tasks directly.  If, however, you need to allow multiple users to have access, etc., you will probably need a queuing mechanism, eg. Moab/Torque, PBSPro, Slurm, SGE, LoadLeveler, LSF
-% 	\pause\item You will need to monitor the system for hardware and software failures.  Think something like \emph{ganglia}.
-%       \end{itemize}
-%     }
 % 
-%   \subsection{Computational Software}
-%     \frame{
-%       \frametitle{Actually doing work}
-%       In order for the system to be useful, you need software to do some calculations.  Some things to consider here:
-%       \begin{itemize}
-% 	\pause\item How will I get the software to utilize all the resources (eg. processors) available?  Do I need to use some form of communication framework like MPI to coordinate efforts, or will I just launch independent tasks
-% 	\pause\item Is there any form of tuning that I can do to make the software more efficient?  For example, if it's compiled software, am I taking advantage of compilation optimizations, eg. SSE, or specialty BLAS implementations like Intel MKL or GotoBlas?
-%       \end{itemize}
 % 
-%     }
 % 
+% 
+% % \section{Building your own HPC Cluster}
+% % 
+% %   \frame{
+% %     \frametitle{Components needed to build an HPC Cluster}
+% % 
+% %     To build your own HPC cluster, consider the following components:
+% % 
+% %     \begin{itemize}
+% % %       \pause\item System Hardware
+% % %       \pause\item Network Hardware
+% %       \pause\item Hardware
+% %       \pause\item Operating System Software
+% %       \pause\item Infrastructure Software
+% %       \pause\item Computational Software
+% %     \end{itemize}
+% % 
+% %   }
+% % 
+% %   \subsection{Hardware}
+% %     \frame{
+% %       \frametitle{Hardware Considerations}
+% %       When considering system hardware, be aware of the following considerations:
+% %       \begin{itemize}
+% % 	\pause\item If a process is using resources on multiple nodes, it's significantly easier if the nodes' hardware is homogeneous.
+% % 	\pause\item You need to know the task's or software's requirements, and build the system appropriately in the following areas:
+% % 	\begin{itemize}
+% % 	  \pause\item Processor features and speed
+% % 	  \pause\item RAM
+% % 	  \pause\item Network Performance (bandwidth and latency)
+% % 	  \pause\item Storage requirements (total capacity, throughput, and IOPS)
+% % 	\end{itemize}
+% %       \end{itemize}
+% % 
+% %     }
+% %   \subsection{OS Software}
+% % 
+% %     \frame{
+% %       \frametitle{Compute Node Operating System}
+% %       \begin{itemize}
+% % 	\pause\item Each computational node needs to have a functioning operating system.  \emph{Linux} is the most common, usually installed either through a \emph{golden image} approach (usually vendor-provided), or scalable, scripted installer, eg. \emph{NPACI Rocks}.
+% % 	\pause\item You will need to make sure your computational software is supported on the system.  For example, many more commercial software packages run on \emph{RedHat Enterprise Linux} than on \emph{Ubuntu}.
+% %       \end{itemize}
+% % 
+% %     }
+% % 
+% %   \subsection{Infrastructure Software}
+% %     \frame{
+% %       \frametitle{Organizing the effort}
+% %       \begin{itemize}
+% % 	\pause\item If you're the only person using the system, you can just run your tasks directly.  If, however, you need to allow multiple users to have access, etc., you will probably need a queuing mechanism, eg. Moab/Torque, PBSPro, Slurm, SGE, LoadLeveler, LSF
+% % 	\pause\item You will need to monitor the system for hardware and software failures.  Think something like \emph{ganglia}.
+% %       \end{itemize}
+% %     }
+% % 
+% %   \subsection{Computational Software}
+% %     \frame{
+% %       \frametitle{Actually doing work}
+% %       In order for the system to be useful, you need software to do some calculations.  Some things to consider here:
+% %       \begin{itemize}
+% % 	\pause\item How will I get the software to utilize all the resources (eg. processors) available?  Do I need to use some form of communication framework like MPI to coordinate efforts, or will I just launch independent tasks
+% % 	\pause\item Is there any form of tuning that I can do to make the software more efficient?  For example, if it's compiled software, am I taking advantage of compilation optimizations, eg. SSE, or specialty BLAS implementations like Intel MKL or GotoBlas?
+% %       \end{itemize}
+% % 
+% %     }
+% % 
 % 
 %   \section{Summary/Conclusions}
 % 
@@ -1055,6 +1137,20 @@
 %       \pause\item Not everything works like Ethernet and TCP/IP.  Network technologies like Fibre Channel and Infiniband throw away a number of the basic assumptions of Ethernet.
 %     \end{itemize}
 %   }
+
+
+\section{Evaluating Topologies}
+  \frame{
+    \frametitle{What are some important characteristics for evaluating topologies?}
+    %TODO
+% --- Latency/hop-count
+% --- Total bandwidth
+% --- Minimum Bisectional Bandwidth
+% --- MBB to Client BW Ratio
+% --- Ease of expansion
+% --- Cost
+
+  }
 
 
 \section{Questions}
