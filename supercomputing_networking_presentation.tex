@@ -3,7 +3,9 @@
 % \documentclass[handout,hyperref={pdfpagelabels=false}]{beamer}
 % \documentclass[hyperref={pdfpagelabels=false}]{beamer}
 % \documentclass[hyperref]{beamer}
+
 \documentclass[handout]{beamer}
+% \documentclass{beamer}
 
 \usepackage[utf8x]{inputenc}
 %\usepackage{default}
@@ -55,6 +57,8 @@
 \tikzstyle{node}=[circle,draw=blue!50!black!50,top color=white,bottom color=blue!50!black!25]
 \tikzstyle{mynode}=[circle,draw=red!50!black!50,top color=white,bottom color=blue!50!black!25]
 % \tikzstyle{user}=[ellipse,draw=green!50!black!50,top color=white,bottom color=green!50!black!25,densely dotted]
+\tikzstyle{invis}=[draw=none]
+% \tikzstyle{bisect}=[draw=red!50!black!50]
 
 
 \author{Lloyd Brown}
@@ -71,11 +75,11 @@
     \tableofcontents
   }
 
-\section{What is HPC}
+\section{HPC Introduction}
 
 
 
-\section{What is HPC?}
+\subsection{What is HPC?}
 
   \frame{
     \frametitle{What makes a supercomputer, super?}
@@ -90,7 +94,7 @@
     \end{itemize}
   }
 
-\section{Types of HPC}
+\subsection{Types of HPC}
   \frame{
     \frametitle{Nature of HPC Computing}
     In HPC, speedup comes from one of two sources:
@@ -211,17 +215,17 @@
   }
 
 %   \subsection{Terminology}
-
-  \frame{
-    \frametitle{Terms}
-    \begin{itemize}
-      \pause\item[HCA] Host Channel Adapter - The interface device that connects a host to the network
-      \pause\item[GUID] Globally-unique Identifier; hardware address on each HCA or switch; like a MAC address
-      \pause\item[LID] Logical Identifier (address) assigned by the subnet manager to the HCA; kinda like an IP, but resides in the upper part of layer 2
-      \pause\item[SM] Subnet Manager, a hardware or software device that assigns LIDs to GUIDs, and pre-loads the switch forwarding tables
-    \end{itemize}
-
-  }
+% 
+%   \frame{
+%     \frametitle{Terms}
+%     \begin{itemize}
+%       \pause\item[HCA] Host Channel Adapter - The interface device that connects a host to the network
+%       \pause\item[GUID] Globally-unique Identifier; hardware address on each HCA or switch; like a MAC address
+%       \pause\item[LID] Logical Identifier (address) assigned by the subnet manager to the HCA; kinda like an IP, but resides in the upper part of layer 2
+%       \pause\item[SM] Subnet Manager, a hardware or software device that assigns LIDs to GUIDs, and pre-loads the switch forwarding tables
+%     \end{itemize}
+% 
+%   }
 
   \subsection{Physical Layer Characteristics}
 
@@ -354,10 +358,10 @@
       \frametitle{Infiniband Topologies}
       Infinband puts very little restriction on the physical topology of the network.  
       \begin{itemize}
-	\pause\item The Subnet Manager loads all the forwarding tables into the switches
+	\item<1-> The Subnet Manager loads all the forwarding tables into the switches
 	\begin{itemize}
-	 \pause \item as long as you can build an appropriate graph parsing algorithm, and implement it in a subnet manager, you can use a topology
-	  \pause\item allows some much more interesting topologies than those commonly Ethernet and TCP/IP networks usually use.\footnote{Technically you can use any topology with Ethernet as well.  It just takes a huge amount of very-messy work, for very little benefit.  I don't recommend trying it.}
+	  \item<2-> as long as you can build an appropriate graph parsing algorithm, and implement it in a subnet manager, you can use a topology
+	  \item<3-> allows some much more interesting topologies than those commonly Ethernet and TCP/IP networks usually use.\footnote<3->{Technically you can use any topology with Ethernet as well.  It just takes a huge amount of very-messy work, for very little benefit.  I don't recommend trying it.}
 	\end{itemize}
       \end{itemize}
 
@@ -476,14 +480,14 @@
 %     %
 
       \GraphInit
-\Vertex[style=node,x=-0.383,y=0.924]{A}
-\Vertex[style=node,x=-0.924,y=0.383]{B}
-\Vertex[style=node,x=-0.924,y=-0.383]{C}
-\Vertex[style=node,x=-0.383,y=-0.924]{D}
-\Vertex[style=node,x=0.383,y=-0.924]{E}
-\Vertex[style=node,x=0.924,y=-0.383]{F}
-\Vertex[style=node,x=0.924,y=0.383]{G}
-\Vertex[style=node,x=0.383,y=0.924]{H}
+      \Vertex[style=node,x=-0.383,y=0.924]{A}
+      \Vertex[style=node,x=-0.924,y=0.383]{B}
+      \Vertex[style=node,x=-0.924,y=-0.383]{C}
+      \Vertex[style=node,x=-0.383,y=-0.924]{D}
+      \Vertex[style=node,x=0.383,y=-0.924]{E}
+      \Vertex[style=node,x=0.924,y=-0.383]{F}
+      \Vertex[style=node,x=0.924,y=0.383]{G}
+      \Vertex[style=node,x=0.383,y=0.924]{H}
 
 
 
@@ -718,11 +722,12 @@
 	  \item<1->Most common approach for small or medium-scale Infiniband fabrics
 	  \item<2->Well understood (how larger IB switches are designed internally)
 	  \item<3->Redundant; 1 link from each leaf to each spine
+	  \item<4->Easy to expand (up to the port count of the switches)
 	\end{itemize}
-	\item<4->Con: Scalability limited by the port count of spine \& leaf switches
+	\item<5->Con: Scalability limited by the port count of spine \& leaf switches
       \end{itemize}
 
-      \begin{tikzpicture}[>=latex,line join=bevel,transform shape,scale=0.54]
+      \begin{tikzpicture}[>=latex,line join=bevel,transform shape,scale=0.47]
 	\GraphInit
 	\Vertex[y=0,x=-3,style=node,L=spine1]{s1}
 	\Vertex[y=0,x=-1,style=node,L=spine2]{s2}
@@ -1139,16 +1144,374 @@
 %   }
 
 
-\section{Evaluating Topologies}
+  \subsection{Evaluating Topologies}
   \frame{
     \frametitle{What are some important characteristics for evaluating topologies?}
-    %TODO
-% --- Latency/hop-count
-% --- Total bandwidth
-% --- Minimum Bisectional Bandwidth
-% --- MBB to Client BW Ratio
-% --- Ease of expansion
-% --- Cost
+    \begin{itemize}
+	\pause\item Latency/hop-count
+	\pause\item Total host bandwidth
+	\pause\item Ease of expansion
+	\pause\item Cost
+	\pause\item Minimum Bisection Bandwidth
+	\pause\item MBB to Client BW Ratio
+    \end{itemize}
+  }
+
+  \frame{
+    \frametitle{What's ``Minimum Bisection Bandwidth''?}
+    \begin{itemize}
+      \pause\item If you were to draw a line across a topology, such that half the clients/switches/whatever are on each side of the line, the total bandwidth of all the links ``cut'' by that line is the \emph{bisection bandwidth}
+      \pause\item Of all the possible \emph{bisection bandwidth} lines, the one with the minimum bandwidth is called the \emph{minimum bisection bandwidth}
+    \end{itemize}
+  }
+
+  \frame{
+    \frametitle{MBB Example - Torus}
+    
+    Which bisection line represents the minimum bandwidth bisection (assume all links are the same speed)?
+    \begin{itemize}
+     \item<2-> \begin{small}Green line cuts 8 links; red line cuts 12 links; Green is the \emph{minimum}\end{small}
+    \end{itemize}
+
+
+
+    \begin{center}
+      \begin{tikzpicture}[>=latex,line join=bevel,scale=1.0]
+	    \GraphInit
+      %       \SetVertexNormal[VertexStyle]
+\Vertex[x=0,y=3,style=node]{A}
+\Vertex[x=1,y=3,style=node]{B}
+\Vertex[x=2,y=3,style=node]{C}
+\Vertex[x=3,y=3,style=node]{D}
+\Vertex[x=4,y=3,style=node]{E}
+\Vertex[x=5,y=3,style=node]{F}
+\Vertex[x=0,y=2,style=node]{G}
+\Vertex[x=1,y=2,style=node]{H}
+\Vertex[x=2,y=2,style=node]{I}
+\Vertex[x=3,y=2,style=node]{J}
+\Vertex[x=4,y=2,style=node]{K}
+\Vertex[x=5,y=2,style=node]{L}
+\Vertex[x=0,y=1,style=node]{M}
+\Vertex[x=1,y=1,style=node]{N}
+\Vertex[x=2,y=1,style=node]{O}
+\Vertex[x=3,y=1,style=node]{P}
+\Vertex[x=4,y=1,style=node]{Q}
+\Vertex[x=5,y=1,style=node]{R}
+\Vertex[x=0,y=0,style=node]{S}
+\Vertex[x=1,y=0,style=node]{T}
+\Vertex[x=2,y=0,style=node]{U}
+\Vertex[x=3,y=0,style=node]{V}
+\Vertex[x=4,y=0,style=node]{W}
+\Vertex[x=5,y=0,style=node]{X}
+
+
+% 	    \Edge(A)(B)
+% 	    \Edge(A)(E)
+% 	    \Edge(B)(F)
+% 	    \Edge(B)(C)
+% 	    \Edge(C)(G)
+% 	    \Edge(C)(D)
+% 	    \Edge(D)(H)
+% 	    \Edge(E)(F)
+% 	    \Edge(E)(I)
+% 	    \Edge(F)(G)
+% 	    \Edge(F)(J)
+% 	    \Edge(G)(H)
+% 	    \Edge(G)(K)
+% 	    \Edge(H)(L)
+% 	    \Edge(I)(J)
+% 	    \Edge(I)(M)
+% 	    \Edge(J)(K)
+% 	    \Edge(J)(N)
+% 	    \Edge(K)(L)
+% 	    \Edge(K)(O)
+% 	    \Edge(L)(P)
+% 	    \Edge(M)(N)
+% 	    \Edge(N)(O)
+% 	    \Edge(O)(P)
+% 
+% 	    \Edge[style=bend right](D)(A)
+% 	    \Edge[style=bend right](H)(E)
+% 	    \Edge[style=bend right](L)(I)
+% 	    \Edge[style=bend right](P)(M)
+% 	    \Edge[style=bend right](M)(A)
+% 	    \Edge[style=bend right](N)(B)
+% 	    \Edge[style=bend right](O)(C)
+% 	    \Edge[style=bend right](P)(D)
+
+\Vertex[x=-1,y=1.5,style=invis,NoLabel=true]{Ihl}
+\Vertex[x=6,y=1.5,style=invis,NoLabel=true]{Ihr}
+\Vertex[x=2.5,y=-1.25,style=invis,NoLabel=true]{Ivb}
+\Vertex[x=2.5,y=4.25,style=invis,NoLabel=true]{Ivt}
+\SetUpEdge[color=red,style=dashed]
+\Edge(Ihl)(Ihr)
+\SetUpEdge[color=green,style=dashed]
+\Edge(Ivt)(Ivb)
+
+\SetUpEdge[color=black,style=]
+
+\Edge(A)(B)
+\Edge(B)(C)
+\Edge(C)(D)
+\Edge(D)(E)
+\Edge(E)(F)
+\Edge(G)(H)
+\Edge(H)(I)
+\Edge(I)(J)
+\Edge(J)(K)
+\Edge(K)(L)
+\Edge(M)(N)
+\Edge(N)(O)
+\Edge(O)(P)
+\Edge(P)(Q)
+\Edge(Q)(R)
+\Edge(S)(T)
+\Edge(T)(U)
+\Edge(U)(V)
+\Edge(V)(W)
+\Edge(W)(X)
+
+\Edge(A)(G)
+\Edge(G)(M)
+\Edge(M)(S)
+\Edge(B)(H)
+\Edge(H)(N)
+\Edge(N)(T)
+\Edge(C)(I)
+\Edge(I)(O)
+\Edge(O)(U)
+\Edge(D)(J)
+\Edge(J)(P)
+\Edge(P)(V)
+\Edge(E)(K)
+\Edge(K)(Q)
+\Edge(Q)(W)
+\Edge(F)(L)
+\Edge(L)(R)
+\Edge(R)(X)
+
+\Edge[style=bend left](A)(F)
+\Edge[style=bend left](G)(L)
+\Edge[style=bend right](M)(R)
+\Edge[style=bend right](S)(X)
+\Edge[style=bend right](A)(S)
+\Edge[style=bend right](B)(T)
+\Edge[style=bend right](C)(U)
+\Edge[style=bend left](D)(V)
+\Edge[style=bend left](E)(W)
+\Edge[style=bend left](F)(X)
+
+
+	  \end{tikzpicture}
+    \end{center}
+
+  }
+
+  \frame{
+    \frametitle{MBB vs Client BW - Torus}
+    \begin{itemize}
+      \pause\item Frequently we compare MBB to total Client Bandwidth on one side of the MBB line
+      \pause\item Generally the smaller the ratio of MBB:half-client-bandwidth, the better
+      \pause\item For example, using the diagram on the previous slide:
+      \begin{itemize}
+	\pause\item Assuming each node is a switch, with 16 hosts hanging off it, what is the MBB:ClientBW ratio for the Green (MBB) line?
+	\begin{itemize}
+	  \item assume host-switch and switch-switch links are the same BW
+	\end{itemize}
+	\pause\item Each half has 12 switches, or 12*16=192 hosts, and the green line bisects 8 links, for a ratio of 24:1
+      \end{itemize}
+    \end{itemize}
+
+  }
+
+  \frame{
+    \frametitle{MBB vs Client BW - Clos}
+
+    Anyone want to try this one?
+    \begin{itemize}
+      \item Assume that 16 hosts are attached to each of the 24 switches at the bottom, and none to the 4 on the top
+      \item 4 links coming out of each of the 24 switches on the bottom (1 to each of 4 core sw)
+    \end{itemize}
+
+
+    \begin{center}
+      \begin{tikzpicture}[>=latex,line join=bevel,transform shape,scale=0.3]
+	\GraphInit
+
+	\Vertex[x=0,y=0,style=node]{S1}
+	\Vertex[x=1,y=0,style=node]{S2}
+	\Vertex[x=2,y=0,style=node]{S3}
+	\Vertex[x=3,y=0,style=node]{S4}
+	\Vertex[x=4,y=0,style=node]{S5}
+	\Vertex[x=5,y=0,style=node]{S6}
+	\Vertex[x=6,y=0,style=node]{S7}
+	\Vertex[x=7,y=0,style=node]{S8}
+	\Vertex[x=8,y=0,style=node]{S9}
+	\Vertex[x=9,y=0,style=node]{S10}
+	\Vertex[x=10,y=0,style=node]{S11}
+	\Vertex[x=11,y=0,style=node]{S12}
+	\Vertex[x=12,y=0,style=node]{S13}
+	\Vertex[x=13,y=0,style=node]{S14}
+	\Vertex[x=14,y=0,style=node]{S15}
+	\Vertex[x=15,y=0,style=node]{S16}
+	\Vertex[x=16,y=0,style=node]{S17}
+	\Vertex[x=17,y=0,style=node]{S18}
+	\Vertex[x=18,y=0,style=node]{S19}
+	\Vertex[x=19,y=0,style=node]{S20}
+	\Vertex[x=20,y=0,style=node]{S21}
+	\Vertex[x=21,y=0,style=node]{S22}
+	\Vertex[x=22,y=0,style=node]{S23}
+	\Vertex[x=23,y=0,style=node]{S24}
+
+	\Vertex[x=0,y=10,style=node]{C1}
+	\Vertex[x=7.66,y=10,style=node]{C2}
+	\Vertex[x=15.33,y=10,style=node]{C3}
+	\Vertex[x=23,y=10,style=node]{C4}
+
+
+
+	\Edge(S1)(C1)
+	\Edge(S1)(C2)
+	\Edge(S1)(C3)
+	\Edge(S1)(C4)
+	\Edge(S2)(C1)
+	\Edge(S2)(C2)
+	\Edge(S2)(C3)
+	\Edge(S2)(C4)
+	\Edge(S3)(C1)
+	\Edge(S3)(C2)
+	\Edge(S3)(C3)
+	\Edge(S3)(C4)
+	\Edge(S4)(C1)
+	\Edge(S4)(C2)
+	\Edge(S4)(C3)
+	\Edge(S4)(C4)
+	\Edge(S5)(C1)
+	\Edge(S5)(C2)
+	\Edge(S5)(C3)
+	\Edge(S5)(C4)
+	\Edge(S6)(C1)
+	\Edge(S6)(C2)
+	\Edge(S6)(C3)
+	\Edge(S6)(C4)
+	\Edge(S7)(C1)
+	\Edge(S7)(C2)
+	\Edge(S7)(C3)
+	\Edge(S7)(C4)
+	\Edge(S8)(C1)
+	\Edge(S8)(C2)
+	\Edge(S8)(C3)
+	\Edge(S8)(C4)
+	\Edge(S9)(C1)
+	\Edge(S9)(C2)
+	\Edge(S9)(C3)
+	\Edge(S9)(C4)
+	\Edge(S10)(C1)
+	\Edge(S10)(C2)
+	\Edge(S10)(C3)
+	\Edge(S10)(C4)
+	\Edge(S11)(C1)
+	\Edge(S11)(C2)
+	\Edge(S11)(C3)
+	\Edge(S11)(C4)
+	\Edge(S12)(C1)
+	\Edge(S12)(C2)
+	\Edge(S12)(C3)
+	\Edge(S12)(C4)
+	\Edge(S13)(C1)
+	\Edge(S13)(C2)
+	\Edge(S13)(C3)
+	\Edge(S13)(C4)
+	\Edge(S14)(C1)
+	\Edge(S14)(C2)
+	\Edge(S14)(C3)
+	\Edge(S14)(C4)
+	\Edge(S15)(C1)
+	\Edge(S15)(C2)
+	\Edge(S15)(C3)
+	\Edge(S15)(C4)
+	\Edge(S16)(C1)
+	\Edge(S16)(C2)
+	\Edge(S16)(C3)
+	\Edge(S16)(C4)
+	\Edge(S17)(C1)
+	\Edge(S17)(C2)
+	\Edge(S17)(C3)
+	\Edge(S17)(C4)
+	\Edge(S18)(C1)
+	\Edge(S18)(C2)
+	\Edge(S18)(C3)
+	\Edge(S18)(C4)
+	\Edge(S19)(C1)
+	\Edge(S19)(C2)
+	\Edge(S19)(C3)
+	\Edge(S19)(C4)
+	\Edge(S20)(C1)
+	\Edge(S20)(C2)
+	\Edge(S20)(C3)
+	\Edge(S20)(C4)
+	\Edge(S21)(C1)
+	\Edge(S21)(C2)
+	\Edge(S21)(C3)
+	\Edge(S21)(C4)
+	\Edge(S22)(C1)
+	\Edge(S22)(C2)
+	\Edge(S22)(C3)
+	\Edge(S22)(C4)
+	\Edge(S23)(C1)
+	\Edge(S23)(C2)
+	\Edge(S23)(C3)
+	\Edge(S23)(C4)
+	\Edge(S24)(C1)
+	\Edge(S24)(C2)
+	\Edge(S24)(C3)
+	\Edge(S24)(C4)
+
+	\Vertex[x=11.5,y=-1,style=invis,NoLabel=True]{MBBb}
+	\Vertex[x=11.5,y=11,style=invis,NoLabel=True]{MBBt}
+
+	\SetUpEdge[color=red,style=dashed]
+	\Edge(MBBb)(MBBt)
+
+      \end{tikzpicture}
+
+    \end{center}
+ 
+  }
+
+
+  \frame{
+    \frametitle{MBB vs Client BW - Clos}
+    \begin{itemize}
+      \item Bisection line cuts 2 of 4 links per leaf switch (48 total links cut)
+      \pause\item 12 switches per half * 16 clients = 192 clients
+      \pause\item 192:48 => 4:1
+    \end{itemize}
+
+  }
+
+\section{Multi-path Ethernet and TCP/IP}
+  \frame{
+    \begin{itemize}
+      \item<1-> Current efforts are underway to create multi-path options for more-common Ethernet and TCP/IP networks
+      \item<2-> Some approaches:
+      \begin{itemize}
+	\item<2-> ECMP - Equal Cost Multi-Path Routing (layer 3)
+	\item<3-> TRILL - Transparent Interconnection of Lots of Links - Multi-path Ethernet\footnote<3->{The best reference I'm aware of is \emph{Introduction to Trill} by Radia Perlman and Donald Eastlake, available at \url{http://www.ipjforum.org/?p=582}}
+      \end{itemize}
+    \end{itemize}
+
+  }
+
+\section{Conclusions}
+  \frame{
+    \frametitle{What do I need to learn from this?}
+
+    \begin{itemize}
+      \item<2-> Not everything is Ethernet and TCP/IP
+      \item<3-> A Tree-like topology may not be the best arrangement for a specific application, especially in data centers
+      \item<4-> What you're used to doing now, may change in the future (eg. TRILL)
+    \end{itemize}
 
   }
 
