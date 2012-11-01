@@ -1,11 +1,14 @@
 \pdfoptionpdfminorversion=5
 
-% \documentclass[handout,hyperref={pdfpagelabels=false}]{beamer}
-% \documentclass[hyperref={pdfpagelabels=false}]{beamer}
-% \documentclass[hyperref]{beamer}
 
-\documentclass[handout]{beamer}
-% \documentclass{beamer}
+
+\documentclass{beamer}
+% TO PREP SLIDES, COMMENT THE ABOVE LINE, AND UNCOMMENT THE FOLLOWING THREE
+% \documentclass[handout]{beamer}
+% \usepackage{handoutWithNotes}
+% \pgfpagesuselayout{2 on 1 with notes landscape}[letterpaper,border shrink=5mm]
+% \pgfpagesuselayout{3 on 1 with notes}[letterpaper,border shrink=5mm]
+
 
 \usepackage[utf8x]{inputenc}
 %\usepackage{default}
@@ -184,8 +187,10 @@
     \begin{itemize}
       \pause\item Ethernet
       \pause\item Fibre Channel
-      \pause\item Infiniband
+      \pause\item WiFi (IEEE 802.11)
+      \pause\item Token Ring
       \pause\item RS-232
+      \pause\item Infiniband
     \end{itemize}
 
   }
@@ -1658,7 +1663,8 @@
     \begin{itemize}
       \item<2-> Not everything is Ethernet and TCP/IP
       \item<3-> A Tree-like topology may not be the best arrangement for a specific application, especially in data centers
-      \item<4-> What you're used to doing now, may change in the future (eg. TRILL)
+      \item<4-> You absolutely \emph{must} understand the communication patterns of your applicaiton, in order to select the correct technology and topology
+      \item<5-> What you're used to doing now, may change in the future (eg. TRILL)
     \end{itemize}
 
   }
