@@ -1146,12 +1146,12 @@
 
   \subsection{Evaluating Topologies}
   \frame{
-    \frametitle{What are some important characteristics for evaluating topologies?}
+    \frametitle{What are some important characteristics for evaluating networks and topologies?}
     \begin{itemize}
-	\pause\item Latency/hop-count
 	\pause\item Total host bandwidth
-	\pause\item Ease of expansion
+	\pause\item Latency/hop-count
 	\pause\item Cost
+	\pause\item Ease of expansion
 	\pause\item Minimum Bisection Bandwidth
 	\pause\item MBB to Client BW Ratio
     \end{itemize}
@@ -1164,6 +1164,7 @@
       \pause\item Of all the possible \emph{bisection bandwidth} lines, the one with the minimum bandwidth is called the \emph{minimum bisection bandwidth}
     \end{itemize}
   }
+
 
   \frame{
     \frametitle{MBB Example - Torus}
@@ -1308,11 +1309,158 @@
   }
 
   \frame{
+    \frametitle{Why is MBB important?}
+
+    \begin{itemize}
+      \pause\item MBB represents the available bandwidth during a worst-case scenario:
+      \begin{itemize}
+	\pause\item All the clients on one side of the MBB line are trying to communicate with someone on the other side of the line, as fast as possible
+      \end{itemize}
+    \end{itemize}
+  }
+
+  \frame{
+    \frametitle{MBB Example - Torus (cont)}
+    
+
+    \begin{center}
+      \begin{tikzpicture}[>=latex,line join=bevel,scale=1.0]
+	    \GraphInit
+      %       \SetVertexNormal[VertexStyle]
+\Vertex[x=0,y=3,style=node]{A}
+\Vertex[x=1,y=3,style=node]{B}
+\Vertex[x=2,y=3,style=node]{C}
+\Vertex[x=3,y=3,style=node]{D}
+\Vertex[x=4,y=3,style=node]{E}
+\Vertex[x=5,y=3,style=node]{F}
+\Vertex[x=0,y=2,style=node]{G}
+\Vertex[x=1,y=2,style=node]{H}
+\Vertex[x=2,y=2,style=node]{I}
+\Vertex[x=3,y=2,style=node]{J}
+\Vertex[x=4,y=2,style=node]{K}
+\Vertex[x=5,y=2,style=node]{L}
+\Vertex[x=0,y=1,style=node]{M}
+\Vertex[x=1,y=1,style=node]{N}
+\Vertex[x=2,y=1,style=node]{O}
+\Vertex[x=3,y=1,style=node]{P}
+\Vertex[x=4,y=1,style=node]{Q}
+\Vertex[x=5,y=1,style=node]{R}
+\Vertex[x=0,y=0,style=node]{S}
+\Vertex[x=1,y=0,style=node]{T}
+\Vertex[x=2,y=0,style=node]{U}
+\Vertex[x=3,y=0,style=node]{V}
+\Vertex[x=4,y=0,style=node]{W}
+\Vertex[x=5,y=0,style=node]{X}
+
+
+% 	    \Edge(A)(B)
+% 	    \Edge(A)(E)
+% 	    \Edge(B)(F)
+% 	    \Edge(B)(C)
+% 	    \Edge(C)(G)
+% 	    \Edge(C)(D)
+% 	    \Edge(D)(H)
+% 	    \Edge(E)(F)
+% 	    \Edge(E)(I)
+% 	    \Edge(F)(G)
+% 	    \Edge(F)(J)
+% 	    \Edge(G)(H)
+% 	    \Edge(G)(K)
+% 	    \Edge(H)(L)
+% 	    \Edge(I)(J)
+% 	    \Edge(I)(M)
+% 	    \Edge(J)(K)
+% 	    \Edge(J)(N)
+% 	    \Edge(K)(L)
+% 	    \Edge(K)(O)
+% 	    \Edge(L)(P)
+% 	    \Edge(M)(N)
+% 	    \Edge(N)(O)
+% 	    \Edge(O)(P)
+% 
+% 	    \Edge[style=bend right](D)(A)
+% 	    \Edge[style=bend right](H)(E)
+% 	    \Edge[style=bend right](L)(I)
+% 	    \Edge[style=bend right](P)(M)
+% 	    \Edge[style=bend right](M)(A)
+% 	    \Edge[style=bend right](N)(B)
+% 	    \Edge[style=bend right](O)(C)
+% 	    \Edge[style=bend right](P)(D)
+
+% \Vertex[x=-1,y=1.5,style=invis,NoLabel=true]{Ihl}
+% \Vertex[x=6,y=1.5,style=invis,NoLabel=true]{Ihr}
+\Vertex[x=2.5,y=-1.25,style=invis,NoLabel=true]{Ivb}
+\Vertex[x=2.5,y=4.25,style=invis,NoLabel=true]{Ivt}
+% \SetUpEdge[color=red,style=dashed]
+% \Edge(Ihl)(Ihr)
+\SetUpEdge[color=green,style=dashed]
+\Edge(Ivt)(Ivb)
+
+\SetUpEdge[color=black,style=]
+
+\Edge(A)(B)
+\Edge(B)(C)
+\Edge(C)(D)
+\Edge(D)(E)
+\Edge(E)(F)
+\Edge(G)(H)
+\Edge(H)(I)
+\Edge(I)(J)
+\Edge(J)(K)
+\Edge(K)(L)
+\Edge(M)(N)
+\Edge(N)(O)
+\Edge(O)(P)
+\Edge(P)(Q)
+\Edge(Q)(R)
+\Edge(S)(T)
+\Edge(T)(U)
+\Edge(U)(V)
+\Edge(V)(W)
+\Edge(W)(X)
+
+\Edge(A)(G)
+\Edge(G)(M)
+\Edge(M)(S)
+\Edge(B)(H)
+\Edge(H)(N)
+\Edge(N)(T)
+\Edge(C)(I)
+\Edge(I)(O)
+\Edge(O)(U)
+\Edge(D)(J)
+\Edge(J)(P)
+\Edge(P)(V)
+\Edge(E)(K)
+\Edge(K)(Q)
+\Edge(Q)(W)
+\Edge(F)(L)
+\Edge(L)(R)
+\Edge(R)(X)
+
+\Edge[style=bend left](A)(F)
+\Edge[style=bend left](G)(L)
+\Edge[style=bend right](M)(R)
+\Edge[style=bend right](S)(X)
+\Edge[style=bend right](A)(S)
+\Edge[style=bend right](B)(T)
+\Edge[style=bend right](C)(U)
+\Edge[style=bend left](D)(V)
+\Edge[style=bend left](E)(W)
+\Edge[style=bend left](F)(X)
+
+
+	  \end{tikzpicture}
+    \end{center}
+
+  }
+
+  \frame{
     \frametitle{MBB vs Client BW - Torus}
     \begin{itemize}
       \pause\item Frequently we compare MBB to total Client Bandwidth on one side of the MBB line
       \pause\item Generally the smaller the ratio of MBB:half-client-bandwidth, the better
-      \pause\item For example, using the diagram on the previous slide:
+      \pause\item For example, using the diagram on the Torus slide:
       \begin{itemize}
 	\pause\item Assuming each node is a switch, with 16 hosts hanging off it, what is the MBB:ClientBW ratio for the Green (MBB) line?
 	\begin{itemize}
