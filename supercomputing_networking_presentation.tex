@@ -1,9 +1,13 @@
 \pdfoptionpdfminorversion=5
 
 
+% use this one if you want to have all the overlays
+% \documentclass{beamer}
 
-\documentclass{beamer}
-% TO PREP SLIDES, COMMENT THE ABOVE LINE, AND UNCOMMENT THE FOLLOWING THREE
+% use this one if you want the slides without any overlays/transitions
+\documentclass[handout]{beamer}
+
+% use this one if you want handouts with lines for notes next to them
 % \documentclass[handout]{beamer}
 % \usepackage{handoutWithNotes}
 % \pgfpagesuselayout{2 on 1 with notes landscape}[letterpaper,border shrink=5mm]
@@ -66,7 +70,7 @@
 
 \author{Lloyd Brown}
 \title{High-Performance Computing Networks at BYU}
-\date{November 1, 2012}
+\date{October 10, 2013}
 
 
 \begin{document}
@@ -317,7 +321,7 @@
 
   \frame{
     \frametitle{Performance at BYU's FSL}
-    The graphs shown in the next couple of slides represent the bandwidth and latency performance of 4xDDR Infiniband vs 1Gb/s Ethernet at the Fulton Supercomputing Lab.
+    The graphs shown in the next couple of slides represent the bandwidth and latency performance of 4xQDR Infiniband vs 1Gb/s Ethernet at the Fulton Supercomputing Lab.
 
     \begin{itemize}
       \item All tests were performed host-to-host with one intervening switch (eg. host-switch-host)
