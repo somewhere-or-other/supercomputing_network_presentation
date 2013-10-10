@@ -190,19 +190,19 @@
 
   }
   
-  \frame{
-    \frametitle{Technologies for \emph{inter}-node communication}
-    Examples of technologies for \emph{inter}-node communication include:
-    \begin{itemize}
-      \pause\item Ethernet
-      \pause\item Fibre Channel
-      \pause\item WiFi (IEEE 802.11)
-      \pause\item Token Ring
-      \pause\item RS-232
-      \pause\item Infiniband
-    \end{itemize}
-
-  }
+%   \frame{
+%     \frametitle{Technologies for \emph{inter}-node communication}
+%     Examples of technologies for \emph{inter}-node communication include:
+%     \begin{itemize}
+%       \pause\item Ethernet
+%       \pause\item Fibre Channel
+%       \pause\item WiFi (IEEE 802.11)
+%       \pause\item Token Ring
+%       \pause\item RS-232
+%       \pause\item Infiniband
+%     \end{itemize}
+% 
+%   }
 
 
 \section{Infiniband}
@@ -548,7 +548,7 @@
 %     \frametitle{Rectangular Mesh / Torus Example}
     \frametitle{Torus example}
     \begin{itemize}
-      \item<1->Pro: Excellent for large topologies (no spine switches to buy)
+      \item<1->Pro: Excellent for large topologies (no core switches to buy)
       \item<2->Con: Higher hop count than other options, depending on size and shape
       \item<3->Con: Less desirable bandwidth ratios (MBB to Client BW; discussed later)
     \end{itemize}
@@ -661,7 +661,7 @@
   }
 
   \frame{
-    \frametitle{Hypercube\footnote{Note that this is really just a special case of a Torus.} example (4-dimensional)}
+    \frametitle{Hypercube example (4-dimensional)\footnote{Note that this is really just a special case of a Torus.}}
     \begin{itemize}
       \item<1->Pro: for \emph{d} dimensions, no more than \emph{d} hops from any other point in the topology
       \item<2->Con: cables/ports at each endpoint increase linearly with the dimension
@@ -1366,7 +1366,7 @@
   }
 
   \frame{
-    \frametitle{MBB Example - Torus (cont)}
+    \frametitle{MBB Example - Torus}
     
 
     \begin{center}
@@ -1686,6 +1686,8 @@
 
 \section{Multi-path Ethernet and TCP/IP}
   \frame{
+
+    \frametitle{Multi-path Ethernet and TCP/IP}
     \begin{itemize}
       \item<1-> Current efforts are underway to create multi-path options for more-common Ethernet and TCP/IP networks
       \item<2-> Some approaches:
